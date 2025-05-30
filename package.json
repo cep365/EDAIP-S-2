@@ -1,0 +1,15 @@
+{
+  "name": "edaip",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "helmet": "^7.0.0",
+    "xss-clean": "^0.1.1",
+    "express-rate-limit": "^7.0.0"
+  }
+}

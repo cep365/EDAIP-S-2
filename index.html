@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EDAIP - Educational Artificial Intelligence Program</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Header with right-aligned burger and TTS toggle */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: transparent; /* Matches page background */
+      color: #222;
+      padding: 10px 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      position: relative;
+    }
+
+    header h1 {
+      margin: 0 auto; /* Center horizontally */
+      font-size: 2rem;
+      font-weight: bold;
+      color: #222;
+      pointer-events: none; /* So clicks pass through to buttons */
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    button#volume-toggle,
+    button#burger-button {
+      background: none;
+      border: none;
+      color: #222;
+      font-size: 1.6rem;
+      cursor: pointer;
+      user-select: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+
+    button#volume-toggle:hover,
+    button#burger-button:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    #burger-menu {
+      display: none;
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: #f0f0f0;
+      padding: 10px 15px;
+      border-radius: 6px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      z-index: 10;
+      color: #222;
+      font-size: 1rem;
+    }
+
+    #burger-menu.show {
+      display: block;
+    }
+
+    #burger-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #burger-menu ul li {
+      margin: 8px 0;
+    }
+
+    #burger-menu ul li a {
+      color: #222;
+      text-decoration: none;
+    }
+
+    #burger-menu ul li a:hover {
+      text-decoration: underline;
+    }
+
+    /* Bot dialogue styling */
+    #bot-dialogue {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      max-width: 280px;
+      background: #fff;
+      border: 2px solid #222;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #222;
+      z-index: 20;
+    }
+
+    #bot-dialogue p {
+      margin-top: 0;
+      font-weight: bold;
+    }
+
+    #bot-dialogue ul {
+      padding-left: 20px;
+      margin: 10px 0 0 0;
+    }
+
+    /* Penguin bot image */
+    #bot-image {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 80px;
+      height: auto;
+      cursor: pointer;
+      z-index: 25;
+      transition: transform 0.3s ease;
+    }
+
+    #bot-image:hover {
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>EDAIP</h1>
+    <div class="header-controls">
+      <button id="volume-toggle" onclick="toggleVolume()" title="Toggle sound" aria-label="Toggle sound">
+        <span id="volume-icon">🔊</span>
+      </button>
+      <button id="burger-button" onclick="toggleMenu()" aria-label="Toggle menu">
+        ☰
+      </button>
+    </div>
+
+    <nav id="burger-menu" aria-label="Main menu">
+      <ul>
+        <li><a href="#math-box">Math & Physics</a></li>
+        <li><a href="#english-box">English & Literature</a></li>
+        <li><a href="#chemistry-box">Science & History</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <h2 style="text-align: center; color: #222;">Educational Artificial Intelligence Program</h2>
+
+  <div class="container">
+    <!-- Math Section -->
+    <div class="subject-box" id="math-box">
+      <h3>Math & Physics</h3>
+      <select id="math-subject">
+        <option value="math">Math</option>
+        <option value="physics">Physics</option>
+      </select>
+      <input type="text" id="math-question" placeholder="Ask your math or physics question..." />
+      <button onclick="askQuestion('math')">Ask AI</button>
+      <div class="symbol-dropdown">
+        <label>Symbols:</label>
+        <select onchange="insertSymbol('math-question', this.value)">
+          <option value="">Insert Symbol</option>
+          <option value="√">√</option>
+          <option value="π">π</option>
+          <option value="∫">∫</option>
+          <option value="Δ">Δ</option>
+          <option value="∞">∞</option>
+          <option value="²">²</option>
+          <option value="³">³</option>
+        </select>
+      </div>
+      <div class="response" id="math-response"></div>
+    </div>
+
+    <!-- English Section -->
+    <div class="subject-box" id="english-box">
+      <h3>English & Literature</h3>
+      <select id="english-subject">
+        <option value="english">English</option>
+        <option value="literature">Literature</option>
+      </select>
+      <input type="text" id="english-question" placeholder="Ask your English or literature question..." />
+      <button onclick="askQuestion('english')">Ask AI</button>
+      <div class="response" id="english-response"></div>
+    </div>
+
+    <!-- Science Section -->
+    <div class="subject-box" id="chemistry-box">
+      <h3>Chemistry, History & Geography</h3>
+      <select id="chemistry-subject">
+        <option value="chemistry">Chemistry</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="science">Science</option>
+      </select>
+      <input type="text" id="chemistry-question" placeholder="Ask your science or history question..." />
+      <button onclick="askQuestion('chemistry')">Ask AI</button>
+      <div class="symbol-dropdown">
+        <label>Symbols:</label>
+        <select onchange="insertSymbol('chemistry-question', this.value)">
+          <option value="">Insert Symbol</option>
+          <option value="H₂O">H₂O</option>
+          <option value="CO₂">CO₂</option>
+          <option value="Na⁺">Na⁺</option>
+          <option value="Cl⁻">Cl⁻</option>
+          <option value="→">→</option>
+        </select>
+      </div>
+      <div class="response" id="chemistry-response"></div>
+    </div>
+  </div>
+
+  <!-- Penguin Bot Image -->
+  <img src="penguin_eduaip.png" id="bot-image" alt="EDAIP Bot" />
+  <div id="bot-dialogue">
+    <p>Hi! I'm EDAIP the Penguin. What do you need help with?</p>
+    <ul>
+      <li>📐 Math Help</li>
+      <li>📘 English Writing</li>
+      <li>🧪 Science Concepts</li>
+      <li>🌍 Geography & History</li>
+    </ul>
+    <p>Click my image anytime to toggle this help message.</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
